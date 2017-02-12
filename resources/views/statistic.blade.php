@@ -37,7 +37,7 @@
                             <?=$v['ip']?>
                         </td>
                         <td>
-                            <?=$v['laravel_session']?>    
+                            <?=@$v['laravel_session']?>    
                         </td>
                     </tr>
                     <?php endforeach; ?>   
@@ -62,7 +62,7 @@
                             <?=$v['ip']?>
                         </td>
                         <td>
-                            <?=$v['laravel_session']?>    
+                            <?=@$v['laravel_session']?>    
                         </td>
                     </tr>
                     <?php endforeach; ?>                                    
@@ -87,7 +87,7 @@
                             <?=$v['ip']?>
                         </td>
                         <td>
-                            <?=$v['laravel_session']?>    
+                            <?=@$v['laravel_session']?>    
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -112,7 +112,7 @@
                             <?=$v['ip']?>
                         </td>
                         <td>
-                            <?=$v['laravel_session']?>    
+                            <?=@$v['laravel_session']?>    
                         </td>
                     </tr>
                     <?php endforeach; ?>
