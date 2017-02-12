@@ -64,7 +64,9 @@ class DashboardController extends BaseController
                 foreach($data_tmp_ip[$k] as $k1=>$v1) {
                     foreach($data_tmp_ip[$k][$k1] as $k2=>$v2) {
                         $view_data[$k][$k1][$k2] = count(array_unique($data_tmp_ip[$k][$k1][$k2]));
-                        $view_data[$k][$k1]['laravel_session'] = count(array_unique($data_tmp_session[$k][$k1]['laravel_session']));
+                        if(isset($data_tmp_session[$k][$k1]['laravel_session'])) {
+                            $view_data[$k][$k1]['laravel_session'] = count(array_unique($data_tmp_session[$k][$k1]['laravel_session']));
+                        }
                     }
                 }
             }
