@@ -23,7 +23,10 @@ Route::group(['middleware' => 'admin'], function () {
 	Route::get('/admin/statistic/{page_id}', 'Admin\DashboardController@getPageStatistic');
 });
 
+Route::get('/', function ()    {
+    return redirect()->to('/page/1');
+});
+
 Route::group(['middleware' => 'visitor'], function () {
-    Route::get('/page/{id}', 'HomeController@getTestPage');
-    Route::get('/', 'HomeController@getTestPage');    
+    Route::get('/page/{id}', 'HomeController@getTestPage');    
 });
