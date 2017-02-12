@@ -24,7 +24,7 @@ class DashboardController extends BaseController
         ];
 
         $view_data = [];
-
+        //dd($data);
         foreach ($data as $k=>$v) {
 
             foreach ($data[$k] as $item) {
@@ -38,11 +38,38 @@ class DashboardController extends BaseController
                         $view_data[$k][$data_arr[3]][$data_arr[4]] = 0; 
                         
                     }
+                    if($data_arr[4]=='hit') {
+                        $view_data[$k][$data_arr[3]][$data_arr[4]] += Redis::SCARD("p:".$data_arr[1].":".$k.":".$data_arr[3].":".$data_arr[4]);    
+                    } elseif($data_arr[4]=='ip') {
+                        $tmp = Redis::SMEMBERS("p:".$data_arr[1].":".$k.":".$data_arr[3].":".$data_arr[4]);
 
-                    $view_data[$k][$data_arr[3]][$data_arr[4]] += Redis::SCARD("p:".$data_arr[1].":".$k.":".$data_arr[3].":".$data_arr[4]);                       
+                        foreach($tmp as $item) {
+                            $valid = filter_var($item, FILTER_VALIDATE_IP);
+                            if($valid) {
+                                $data_tmp_ip[$k][$data_arr[3]][$data_arr[4]][] = $item;
+                            }
+                        }
+                    } elseif($data_arr[4]=='laravel_session') {
+                        $tmp = Redis::SMEMBERS("p:".$data_arr[1].":".$k.":".$data_arr[3].":".$data_arr[4]);
+
+                        foreach($tmp as $item) {
+                            $data_tmp_session[$k][$data_arr[3]][$data_arr[4]][] = $item;
+                        }
+                    }                    
             }
         }
 
+        if(isset($data_tmp_ip)) {
+            foreach($data_tmp_ip as $k=>$v) {
+                foreach($data_tmp_ip[$k] as $k1=>$v1) {
+                    foreach($data_tmp_ip[$k][$k1] as $k2=>$v2) {
+                        $view_data[$k][$k1][$k2] = count(array_unique($data_tmp_ip[$k][$k1][$k2]));
+                        $view_data[$k][$k1]['laravel_session'] = count(array_unique($data_tmp_session[$k][$k1]['laravel_session']));
+                    }
+                }
+            }
+        }
+        
         return view('statistic', ['statistic' => $view_data]); 
     }
 
