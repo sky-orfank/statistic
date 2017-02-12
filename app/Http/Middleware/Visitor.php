@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use Illuminate\Support\Facades\Redis;
 use Closure;
 use Request;
-use Illuminate\Http\Request as Qwe;
 
 class Visitor
 {
@@ -16,24 +15,24 @@ class Visitor
         $geoLocation = $this->getGeoLocation(Request::ip());
         $data = 'p'.':'.$request->route('id').':'.'geo_loc'.':'.$geoLocation['countryName'].' '.$geoLocation['city'];
         Redis::SADD($data.':'.'hit', $this->getRandomString($data.':'.'hit'));
-        Redis::SADD($data.':'.'laravel_session', $this->getSession());        
+        if($this->getSession()) Redis::SADD($data.':'.'laravel_session', $this->getSession());        
         Redis::SADD($data.':'.'ip', Request::ip());
 
         $referrer = $this->getReferer();
         $data = 'p'.':'.$request->route('id').':'.'referrer'.':'.$referrer;
         Redis::SADD($data.':'.'hit', $this->getRandomString($data.':'.'hit'));
-        Redis::SADD($data.':'.'laravel_session', $this->getSession());
+        if($this->getSession()) Redis::SADD($data.':'.'laravel_session', $this->getSession());
         Redis::SADD($data.':'.'ip', Request::ip());
 
         $user_agent = $this->parseUserAgent($request->header('User-Agent'));
         $data = 'p'.':'.$request->route('id').':'.'platform'.':'.$user_agent['platform'];
         Redis::SADD($data.':'.'hit', $this->getRandomString($data.':'.'hit'));
-        Redis::SADD($data.':'.'laravel_session', $this->getSession());        
+        if($this->getSession()) Redis::SADD($data.':'.'laravel_session', $this->getSession());        
         Redis::SADD($data.':'.'ip', Request::ip());
 
         $data = 'p'.':'.$request->route('id').':'.'browser'.':'.$user_agent['browser_name'];
         Redis::SADD($data.':'.'hit', $this->getRandomString($data.':'.'hit'));
-        Redis::SADD($data.':'.'laravel_session', $this->getSession());
+        if($this->getSession()) Redis::SADD($data.':'.'laravel_session', $this->getSession());
         Redis::SADD($data.':'.'ip', Request::ip());
 
         return $response; 
@@ -45,7 +44,7 @@ class Visitor
         if(!empty(Request::cookie()['laravel_session'])) {
             return Request::cookie()['laravel_session'];
         } else {
-            return 'no_session';
+            return false;
         }
 
     }
